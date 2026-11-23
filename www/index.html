@@ -355,11 +355,15 @@
   }
 
   async function requestPushPermission() {
-    const cap = window.Capacitor;
-    if (cap && cap.Plugins && cap.Plugins.LocalNotifications) {
-      await cap.Plugins.LocalNotifications.requestPermissions();
-    } else if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
+    try {
+      const cap = window.Capacitor;
+      if (cap && cap.Plugins && cap.Plugins.LocalNotifications) {
+        await cap.Plugins.LocalNotifications.requestPermissions();
+      } else if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    } catch (e) {
+      console.log('Push permission skipped:', e);
     }
   }
 
