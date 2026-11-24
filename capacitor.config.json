@@ -1,9 +1,5 @@
 {
   "appId": "com.focus.tracker",
   "appName": "Фокус",
-  "webDir": "www",
-  "server": {
-    "url": "https://github.io",
-    "cleartext": true
-  }
+  "webDir": "www"
 }
