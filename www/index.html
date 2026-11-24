@@ -3,428 +3,343 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Фокус — Трекер внимания</title>
-  <script src="https://telegram.org"></script>
+  <title>Фокус</title>
   <style>
-    :root {
-      --bg: #FAFAFA;
-      --card: #FFFFFF;
-      --text: #111111;
-      --muted: #666666;
-      --border: #E5E5E5;
-      --primary: #111111;
-      --primary-text: #FFFFFF;
-      --secondary: #EFEFEF;
-    }
+    :root { --bg: #FAFAFA; --card: #FFFFFF; --text: #111; --muted: #666; --border: #E5E5E5; --primary: #111; --sec: #EFEFEF; }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     body { background: var(--bg); color: var(--text); display: flex; justify-content: center; min-height: 100vh; }
-    .app-container { width: 100%; max-width: 440px; padding: 24px; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; }
-    .screen { display: none; flex-direction: column; }
-    .screen.active { display: flex; }
-    .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 36px; }
+    .app { width: 100%; max-width: 440px; padding: 24px; display: flex; flex-direction: column; justify-content: center; min-height: 100vh; }
+    .scr { display: none; flex-direction: column; }
+    .scr.act { display: flex; }
+    .row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
     h1 { font-size: 38px; font-weight: 800; margin-bottom: 8px; }
     h2 { font-size: 26px; font-weight: 700; }
-    .subtitle { font-size: 16px; color: var(--muted); line-height: 1.4; margin-bottom: 28px; }
-    .label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; display: block; }
-    .greeting { font-size: 17px; font-weight: 500; color: var(--muted); }
-    .sync-badge { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    .link-btn { background: none; border: none; font-size: 16px; font-weight: 600; color: var(--text); cursor: pointer; }
-    input, textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-size: 16px; color: var(--text); margin-bottom: 14px; outline: none; }
-    .goal-input { font-size: 24px; font-weight: 600; border: none; border-bottom: 2px solid var(--primary); border-radius: 0; padding: 10px 0; background: transparent; resize: none; }
-    .btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none; cursor: pointer; margin-bottom: 12px; }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-primary { background: var(--primary); color: var(--primary-text); }
-    .btn-secondary { background: var(--secondary); color: var(--text); }
-    .btn-ghost { background: transparent; color: var(--muted); font-weight: 500; }
-    .goal-section { margin-bottom: 32px; }
-    .goal-text { font-size: 30px; font-weight: 700; line-height: 1.25; margin-bottom: 20px; word-break: break-word; }
-    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 20px; }
-    .stats-row { display: flex; align-items: center; }
-    .stat-box { flex: 1; text-align: center; }
-    .stat-num { font-size: 32px; font-weight: 700; }
-    .stat-label { font-size: 13px; color: var(--muted); margin-top: 4px; }
-    .divider { width: 1px; height: 40px; background: var(--border); }
-    .switch-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .row-2 { display: flex; gap: 12px; }
-    .checkin-goal { font-size: 20px; font-weight: 700; margin-bottom: 24px; }
-    .checkin-q { font-size: 28px; font-weight: 600; margin-bottom: 28px; line-height: 1.25; }
-    .btn-big { padding: 22px; font-size: 19px; border-radius: 16px; }
+    .sub { font-size: 15px; color: var(--muted); line-height: 1.4; margin-bottom: 24px; }
+    .lbl { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; display: block; }
+    .link { background: none; border: none; font-size: 16px; font-weight: 600; color: var(--text); cursor: pointer; }
+    input, textarea { width: 100%; background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 15px; font-size: 16px; color: var(--text); margin-bottom: 12px; outline: none; }
+    .g-in { font-size: 22px; font-weight: 600; border: none; border-bottom: 2px solid var(--primary); border-radius: 0; padding: 8px 0; background: transparent; resize: none; }
+    .btn { width: 100%; padding: 16px; border-radius: 12px; font-size: 16px; font-weight: 600; border: none; cursor: pointer; margin-bottom: 10px; }
+    .btn-p { background: var(--primary); color: #FFF; }
+    .btn-s { background: var(--sec); color: var(--text); }
+    .btn-g { background: transparent; color: var(--muted); }
+    .g-txt { font-size: 28px; font-weight: 700; line-height: 1.25; margin-bottom: 16px; word-break: break-word; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 18px; }
+    .s-row { display: flex; align-items: center; text-align: center; }
+    .s-box { flex: 1; }
+    .s-num { font-size: 32px; font-weight: 700; }
+    .s-lbl { font-size: 13px; color: var(--muted); margin-top: 4px; }
+    .div { width: 1px; height: 40px; background: var(--border); }
+    .msg { color: #d32f2f; font-size: 14px; text-align: center; margin-bottom: 10px; min-height: 18px; }
+    .btn-big { padding: 22px; font-size: 18px; border-radius: 16px; }
   </style>
 </head>
 <body>
-<div class="app-container">
+<div class="app">
 
-  <div id="screen-onboarding" class="screen active">
+  <div id="scr-login" class="scr act">
     <h1>Фокус.</h1>
-    <p class="subtitle">Минималистичный трекер внимания. Укажите Email, чтобы синхронизировать прогресс.</p>
-    <input type="text" id="input-name" placeholder="Ваше имя" />
-    <input type="email" id="input-email" placeholder="Email (для облачной синхронизации)" />
-    <button type="button" id="btn-login" class="btn btn-primary">Продолжить</button>
-    <button type="button" id="btn-local" class="btn btn-ghost">Войти через локальный профиль</button>
+    <p class="sub">Укажите Email для синхронизации прогресса или войдите локально.</p>
+    <input type="text" id="in-name" placeholder="Ваше имя" />
+    <input type="email" id="in-email" placeholder="Email" />
+    <div id="login-msg" class="msg"></div>
+    <button type="button" id="b-login" class="btn btn-p">Продолжить</button>
+    <button type="button" id="b-local" class="btn btn-g">Войти локально</button>
   </div>
 
-  <div id="screen-main" class="screen">
-    <div class="header-row">
+  <div id="scr-main" class="scr">
+    <div class="row">
       <div>
-        <div class="greeting" id="user-greeting">Привет</div>
-        <div class="sync-badge" id="sync-status">Готово</div>
+        <div style="font-size:17px;color:#666" id="u-greet">Привет</div>
+        <div style="font-size:12px;color:#888" id="u-sync">Готово</div>
       </div>
-      <button type="button" id="btn-open-settings" class="link-btn">Настройки</button>
+      <button type="button" id="b-set" class="link">Настройки</button>
     </div>
-
-    <div class="goal-section">
-      <span class="label">Главная цель сейчас</span>
-      <div id="goal-view-box">
-        <div class="goal-text" id="goal-display">Не задана</div>
-        <button type="button" id="btn-edit-goal" class="btn btn-secondary">Изменить цель</button>
+    <div style="margin-bottom:28px">
+      <span class="lbl">Главная цель сейчас</span>
+      <div id="g-view">
+        <div class="g-txt" id="g-disp">Не задана</div>
+        <button type="button" id="b-edit" class="btn btn-s">Изменить цель</button>
       </div>
-      <div id="goal-edit-box" style="display: none;">
-        <textarea id="input-goal" class="goal-input" rows="2" placeholder="Например: Учить английский"></textarea>
-        <button type="button" id="btn-save-goal" class="btn btn-primary">Сохранить цель</button>
+      <div id="g-edit" style="display:none">
+        <textarea id="in-goal" class="g-in" rows="2" placeholder="Например: Учить английский"></textarea>
+        <button type="button" id="b-save-g" class="btn btn-p">Сохранить цель</button>
       </div>
-    </div>
-
-    <div class="card">
-      <span class="label">Статистика за сегодня</span>
-      <div class="stats-row">
-        <div class="stat-box">
-          <div class="stat-num" id="stat-focused">0</div>
-          <div class="stat-label">В фокусе</div>
-        </div>
-        <div class="divider"></div>
-        <div class="stat-box">
-          <div class="stat-num" id="stat-distracted">0</div>
-          <div class="stat-label">Отвлёкся</div>
-        </div>
-      </div>
-    </div>
-
-    <button type="button" id="btn-open-checkin" class="btn btn-ghost">Сделать чекин прямо сейчас</button>
-    <button type="button" id="btn-logout" class="btn btn-ghost" style="font-size: 13px; margin-top: -8px;">Сменить аккаунт</button>
-  </div>
-
-  <div id="screen-settings" class="screen">
-    <div class="header-row">
-      <h2>Настройки</h2>
-      <button type="button" id="btn-close-settings" class="link-btn">Закрыть</button>
     </div>
     <div class="card">
-      <div class="switch-row">
-        <div>
-          <div style="font-weight: 600; margin-bottom: 4px;">Случайные напоминания</div>
-          <div style="font-size: 13px; color: var(--muted);" id="mode-desc">Вопросы приходят строго по таймеру</div>
-        </div>
-        <input type="checkbox" id="toggle-random" style="width: 24px; height: 24px; margin: 0;">
+      <span class="lbl">Статистика за сегодня</span>
+      <div class="s-row">
+        <div class="s-box"><div class="s-num" id="st-f">0</div><div class="s-lbl">В фокусе</div></div>
+        <div class="div"></div>
+        <div class="s-box"><div class="s-num" id="st-d">0</div><div class="s-lbl">Отвлёкся</div></div>
       </div>
     </div>
-    <div class="card" id="box-interval">
-      <span class="label">Интервал (в минутах)</span>
-      <input type="number" id="input-interval" value="60" min="1" />
-    </div>
-    <div class="card" id="box-random" style="display: none;">
-      <span class="label">Часы активности (с — до)</span>
-      <div class="row-2">
-        <input type="number" id="input-start" value="9" min="0" max="23" />
-        <input type="number" id="input-end" value="21" min="1" max="24" />
-      </div>
-    </div>
-    <button type="button" id="btn-save-settings" class="btn btn-primary">Сохранить настройки</button>
-    <button type="button" id="btn-test-notif" class="btn btn-secondary">Тест уведомления (через 3 сек)</button>
+    <button type="button" id="b-chk" class="btn btn-g">Сделать чекин сейчас</button>
+    <button type="button" id="b-out" class="btn btn-g" style="font-size:13px">Сменить аккаунт</button>
   </div>
 
-  <div id="screen-checkin" class="screen">
-    <span class="label">Текущая цель</span>
-    <div class="checkin-goal" id="checkin-goal-display">Цель не задана</div>
-    <div class="checkin-q" id="checkin-question">Где сейчас твоё внимание?</div>
-    <button type="button" id="btn-checkin-focus" class="btn btn-primary btn-big">Я в фокусе</button>
-    <button type="button" id="btn-checkin-distracted" class="btn btn-secondary btn-big">Отвлёкся, возвращаюсь</button>
+  <div id="scr-set" class="scr">
+    <div class="row"><h2>Настройки</h2><button type="button" id="b-cls" class="link">Закрыть</button></div>
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center">
+      <div><div style="font-weight:600">Случайные напоминания</div><div style="font-size:13px;color:#666" id="m-desc">По таймеру</div></div>
+      <input type="checkbox" id="tg-rnd" style="width:24px;height:24px;margin:0">
+    </div>
+    <div class="card" id="bx-int"><span class="lbl">Интервал (минут)</span><input type="number" id="in-int" value="60" min="1" /></div>
+    <div class="card" id="bx-rnd" style="display:none"><span class="lbl">Часы (с — до)</span><div style="display:flex;gap:12px"><input type="number" id="in-s" value="9" /><input type="number" id="in-e" value="21" /></div></div>
+    <button type="button" id="b-save-s" class="btn btn-p">Сохранить</button>
+    <button type="button" id="b-test" class="btn btn-s">Тест пуша (через 3 сек)</button>
+  </div>
+
+  <div id="scr-chk" class="scr">
+    <span class="lbl">Текущая цель</span>
+    <div style="font-size:20px;font-weight:700;margin-bottom:20px" id="c-goal">Не задана</div>
+    <div style="font-size:26px;font-weight:600;margin-bottom:28px" id="c-q">Где сейчас твоё внимание?</div>
+    <button type="button" id="b-yes" class="btn btn-p btn-big">Я в фокусе</button>
+    <button type="button" id="b-no" class="btn btn-s btn-big">Отвлёкся, возвращаюсь</button>
   </div>
 
 </div>
 <script>
-  const SUPABASE_URL = 'https://nowwlvcjdkdusuwybkaw.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_lCcge1GapAIN3L3ksT1SUg_mdy_Bw_B';
+  const SB_URL = 'https://nowwlvcjdkdusuwybkaw.supabase.co';
+  const SB_KEY = 'sb_publishable_lCcge1GapAIN3L3ksT1SUg_mdy_Bw_B';
 
-  let state = {
-    user: null,
-    goal: '',
-    stats: { focused: 0, distracted: 0, date: new Date().toDateString() },
-    settings: { isRandom: false, interval: 60, startHour: 9, endHour: 21 }
-  };
-  let timerId = null;
+  let st = { user: null, goal: '', stats: { f: 0, d: 0, date: new Date().toDateString() }, cfg: { rnd: false, int: 60, s: 9, e: 21 } };
+  let tId = null;
 
-  function getHeaders(extra) {
-    return Object.assign({
-      'apikey': SUPABASE_ANON_KEY.trim(),
-      'Content-Type': 'application/json'
-    }, extra || {});
-  }
-
-  function calcNextPing() {
-    const mins = state.settings.isRandom
-      ? (Math.floor(Math.random() * 76) + 15)
-      : Math.max(1, state.settings.interval);
-    return new Date(Date.now() + mins * 60000).toISOString();
-  }
-
-  function showScreen(name) {
-    document.querySelectorAll('.screen').forEach(function(el) { el.classList.remove('active'); });
-    document.getElementById('screen-' + name).classList.add('active');
-    if (name === 'main') renderMain();
-    if (name === 'settings') renderSettings();
-    if (name === 'checkin') renderCheckin();
-  }
-
-  function setSyncStatus(text) {
-    const el = document.getElementById('sync-status');
-    if (el) el.innerText = text;
-  }
-
-  async function saveState(updatePing) {
-    localStorage.setItem('focus_app_data', JSON.stringify(state));
-    if (!state.user || state.user.isLocal || SUPABASE_ANON_KEY.length < 15) {
-      setSyncStatus('Локальный профиль');
-      return;
+  function show(id) {
+    document.querySelectorAll('.scr').forEach(el => el.classList.remove('act'));
+    document.getElementById('scr-' + id).classList.add('act');
+    if (id === 'main') {
+      document.getElementById('u-greet').innerText = 'Привет, ' + (st.user ? st.user.name : 'Гость');
+      document.getElementById('st-f').innerText = st.stats.f;
+      document.getElementById('st-d').innerText = st.stats.d;
+      document.getElementById('g-disp').innerText = st.goal || 'Не задана';
+      document.getElementById('g-view').style.display = st.goal ? 'block' : 'none';
+      document.getElementById('g-edit').style.display = st.goal ? 'none' : 'block';
     }
-    setSyncStatus('Сохранение...');
-    try {
-      const payload = {
-        user_key: state.user.key,
-        name: state.user.name,
-        email: state.user.email || '',
-        telegram_id: state.user.telegramId || null,
-        goal: state.goal,
-        focused: state.stats.focused,
-        distracted: state.stats.distracted,
-        stats_date: state.stats.date,
-        is_random: state.settings.isRandom,
-        interval_min: state.settings.interval,
-        start_hour: state.settings.startHour,
-        end_hour: state.settings.endHour,
-        updated_at: new Date().toISOString()
-      };
-      if (updatePing) payload.next_ping_at = calcNextPing();
+    if (id === 'set') {
+      document.getElementById('tg-rnd').checked = st.cfg.rnd;
+      document.getElementById('in-int').value = st.cfg.int;
+      document.getElementById('in-s').value = st.cfg.s;
+      document.getElementById('in-e').value = st.cfg.e;
+      updMode();
+    }
+    if (id === 'chk') {
+      document.getElementById('c-goal').innerText = st.goal || 'Не задана';
+      document.getElementById('c-q').innerText = getQ();
+    }
+  }
 
-      const res = await fetch(SUPABASE_URL + '/rest/v1/focus_users', {
+  function updMode() {
+    const r = document.getElementById('tg-rnd').checked;
+    document.getElementById('bx-int').style.display = r ? 'none' : 'block';
+    document.getElementById('bx-rnd').style.display = r ? 'block' : 'none';
+    document.getElementById('m-desc').innerText = r ? 'Случайно в течение дня' : 'Строго по таймеру';
+  }
+
+  function getQ() {
+    const arr = ['Чем ты сейчас занят?', 'На что сейчас направлено твоё внимание?', 'Ты приближаешься к цели: «' + (st.goal || 'Не задана') + '»?'];
+    return arr.at(Math.floor(Math.random() * arr.length));
+  }
+
+  async function save() {
+    localStorage.setItem('focus_mob', JSON.stringify(st));
+    const el = document.getElementById('u-sync');
+    if (!st.user || st.user.loc || SB_KEY.length < 15) { el.innerText = 'Локальный режим'; return; }
+    el.innerText = 'Сохранение...';
+    try {
+      const res = await fetch(SB_URL + '/rest/v1/focus_users', {
         method: 'POST',
-        headers: getHeaders({ 'Prefer': 'resolution=merge-duplicates' }),
-        body: JSON.stringify(payload)
+        headers: { 'apikey': SB_KEY.trim(), 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify({
+          user_key: st.user.key, name: st.user.name, email: st.user.email, goal: st.goal,
+          focused: st.stats.f, distracted: st.stats.d, stats_date: st.stats.date,
+          is_random: st.cfg.rnd, interval_min: st.cfg.int, start_hour: st.cfg.s, end_hour: st.cfg.e,
+          updated_at: new Date().toISOString()
+        })
       });
-      setSyncStatus(res.ok ? 'Облако синхронизировано' : 'Ошибка записи');
-    } catch (e) {
-      setSyncStatus('Нет связи с облаком');
-    }
+      el.innerText = res.ok ? 'Облако синхронизировано' : 'Ошибка записи';
+    } catch (e) { el.innerText = 'Офлайн'; }
   }
 
-  async function syncFromCloud(userKey) {
-    if (SUPABASE_ANON_KEY.length < 15) return false;
+  async function sync(key) {
+    if (SB_KEY.length < 15) return false;
     try {
-      const res = await fetch(SUPABASE_URL + '/rest/v1/focus_users?user_key=eq.' + encodeURIComponent(userKey), {
-        headers: getHeaders()
-      });
+      const res = await fetch(SB_URL + '/rest/v1/focus_users?user_key=eq.' + encodeURIComponent(key), { headers: { 'apikey': SB_KEY.trim() } });
       if (!res.ok) return false;
       const rows = await res.json();
-      const data = rows.at(0);
-      if (!data) return false;
-
+      const d = rows.at(0);
+      if (!d) return false;
       const today = new Date().toDateString();
-      const sameDay = data.stats_date === today;
-      state.user = {
-        key: data.user_key,
-        name: data.name,
-        email: data.email || '',
-        telegramId: data.telegram_id || null,
-        isLocal: false
-      };
-      state.goal = data.goal || '';
-      state.stats = {
-        focused: sameDay ? (data.focused || 0) : 0,
-        distracted: sameDay ? (data.distracted || 0) : 0,
-        date: today
-      };
-      state.settings = {
-        isRandom: Boolean(data.is_random),
-        interval: data.interval_min || 60,
-        startHour: data.start_hour || 9,
-        endHour: data.end_hour || 21
-      };
-      localStorage.setItem('focus_app_data', JSON.stringify(state));
-      setSyncStatus('Облако синхронизировано');
+      st.user = { key: d.user_key, name: d.name, email: d.email, loc: false };
+      st.goal = d.goal || '';
+      st.stats = { f: d.stats_date === today ? (d.focused || 0) : 0, d: d.stats_date === today ? (d.distracted || 0) : 0, date: today };
+      st.cfg = { rnd: Boolean(d.is_random), int: d.interval_min || 60, s: d.start_hour || 9, e: d.end_hour || 21 };
+      localStorage.setItem('focus_mob', JSON.stringify(st));
       return true;
-    } catch (e) {
-      return false;
+<script>
+  const SB_URL = 'https://supabase.co';
+  const SB_KEY = 'ВСТАВЬТЕ_СЮДА_ВАШ_КЛЮЧ';
+
+  let st = { user: null, goal: '', stats: { f: 0, d: 0, date: new Date().toDateString() }, cfg: { rnd: false, int: 60, s: 9, e: 21 } };
+  let tId = null;
+
+  function show(id) {
+    document.querySelectorAll('.scr').forEach(el => el.classList.remove('act'));
+    document.getElementById('scr-' + id).classList.add('act');
+    if (id === 'main') {
+      document.getElementById('u-greet').innerText = 'Привет, ' + (st.user ? st.user.name : 'Гость');
+      document.getElementById('st-f').innerText = st.stats.f;
+      document.getElementById('st-d').innerText = st.stats.d;
+      document.getElementById('g-disp').innerText = st.goal || 'Не задана';
+      document.getElementById('g-view').style.display = st.goal ? 'block' : 'none';
+      document.getElementById('g-edit').style.display = st.goal ? 'none' : 'block';
+    }
+    if (id === 'set') {
+      document.getElementById('tg-rnd').checked = st.cfg.rnd;
+      document.getElementById('in-int').value = st.cfg.int;
+      document.getElementById('in-s').value = st.cfg.s;
+      document.getElementById('in-e').value = st.cfg.e;
+      updMode();
+    }
+    if (id === 'chk') {
+      document.getElementById('c-goal').innerText = st.goal || 'Не задана';
+      document.getElementById('c-q').innerText = getQ();
     }
   }
 
-  async function handleLogin(isLocal) {
-    await requestPushPermission();
-    const name = document.getElementById('input-name').value.trim();
-    const email = document.getElementById('input-email').value.trim().toLowerCase();
-
-    if (!isLocal && !email) {
-      alert('Введите Email или нажмите «Войти через локальный профиль»');
-      return;
-    }
-
-    const btn = document.getElementById('btn-login');
-    btn.innerText = 'Загрузка...';
-    btn.disabled = true;
-
-    if (isLocal) {
-      state.user = { key: 'local_' + Date.now(), name: name || 'Гость', email: '', isLocal: true };
-      await saveState(true);
-    } else {
-      const found = await syncFromCloud(email);
-      if (!found) {
-        state.user = { key: email, name: name || email.split('@').at(0), email: email, isLocal: false };
-        await saveState(true);
-      }
-    }
-
-    btn.innerText = 'Продолжить';
-    btn.disabled = false;
-    showScreen('main');
-    if (!state.goal) toggleGoalEdit(true);
-    startScheduler();
+  function updMode() {
+    const r = document.getElementById('tg-rnd').checked;
+    document.getElementById('bx-int').style.display = r ? 'none' : 'block';
+    document.getElementById('bx-rnd').style.display = r ? 'block' : 'none';
+    document.getElementById('m-desc').innerText = r ? 'Случайно в течение дня' : 'Строго по таймеру';
   }
 
-  function renderMain() {
-    document.getElementById('user-greeting').innerText = 'Привет, ' + (state.user ? state.user.name : 'Гость');
-    document.getElementById('stat-focused').innerText = state.stats.focused;
-    document.getElementById('stat-distracted').innerText = state.stats.distracted;
-    if (state.goal) {
-      document.getElementById('goal-display').innerText = state.goal;
-      toggleGoalEdit(false);
-    } else {
-      toggleGoalEdit(true);
-    }
+  function getQ() {
+    const arr = ['Чем ты сейчас занят?', 'На что сейчас направлено твоё внимание?', 'Ты приближаешься к цели: «' + (st.goal || 'Не задана') + '»?'];
+    return arr.at(Math.floor(Math.random() * arr.length));
   }
 
-  function toggleGoalEdit(edit) {
-    document.getElementById('goal-view-box').style.display = edit ? 'none' : 'block';
-    document.getElementById('goal-edit-box').style.display = edit ? 'block' : 'none';
-    if (edit) {
-      document.getElementById('input-goal').value = state.goal;
-      document.getElementById('input-goal').focus();
-    }
-  }
-
-  async function saveGoal() {
-    const val = document.getElementById('input-goal').value.trim();
-    if (!val) return alert('Введите цель');
-    state.goal = val;
-    renderMain();
-    startScheduler();
-    await saveState(true);
-  }
-
-  function renderSettings() {
-    document.getElementById('toggle-random').checked = state.settings.isRandom;
-    document.getElementById('input-interval').value = state.settings.interval;
-    document.getElementById('input-start').value = state.settings.startHour;
-    document.getElementById('input-end').value = state.settings.endHour;
-    toggleModeUI();
-  }
-
-  function toggleModeUI() {
-    const r = document.getElementById('toggle-random').checked;
-    document.getElementById('box-interval').style.display = r ? 'none' : 'block';
-    document.getElementById('box-random').style.display = r ? 'block' : 'none';
-    document.getElementById('mode-desc').innerText = r ? 'Вопросы приходят случайно в течение дня' : 'Вопросы приходят строго по таймеру';
-  }
-
-  async function saveSettings() {
-    state.settings = {
-      isRandom: document.getElementById('toggle-random').checked,
-      interval: Math.max(1, parseInt(document.getElementById('input-interval').value) || 60),
-      startHour: parseInt(document.getElementById('input-start').value) || 9,
-      endHour: parseInt(document.getElementById('input-end').value) || 21
-    };
-    startScheduler();
-    showScreen('main');
-    await saveState(true);
-  }
-
-  function getRandomQuestion() {
-    const q = [
-      'Чем ты сейчас занят?',
-      'На что сейчас направлено твоё внимание?',
-      'Ты сейчас приближаешься к цели: «' + (state.goal || 'Не задана') + '»?'
-    ];
-    return q.at(Math.floor(Math.random() * q.length));
-  }
-
-  async function requestPushPermission() {
+  async function save() {
+    localStorage.setItem('focus_mob', JSON.stringify(st));
+    const el = document.getElementById('u-sync');
+    if (!st.user || st.user.loc || SB_KEY.length < 15) { el.innerText = 'Локальный режим'; return; }
+    el.innerText = 'Сохранение...';
     try {
-      const cap = window.Capacitor;
-      if (cap && cap.Plugins && cap.Plugins.LocalNotifications) {
-        await cap.Plugins.LocalNotifications.requestPermissions();
-      } else if ('Notification' in window && Notification.permission === 'default') {
-        Notification.requestPermission();
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async function sendPush() {
-    const text = getRandomQuestion();
-    const cap = window.Capacitor;
-    if (cap && cap.Plugins && cap.Plugins.LocalNotifications) {
-      await cap.Plugins.LocalNotifications.schedule({
-        notifications: [{
-          title: 'Проверка фокуса',
-          body: text,
-          id: Math.floor(Math.random() * 100000),
-          schedule: { at: new Date(Date.now() + 1000) }
-        }]
+      const res = await fetch(SB_URL + '/rest/v1/focus_users', {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY.trim(), 'Content-Type': 'application/json', 'Prefer': 'resolution=merge-duplicates' },
+        body: JSON.stringify({
+          user_key: st.user.key, name: st.user.name, email: st.user.email, goal: st.goal,
+          focused: st.stats.f, distracted: st.stats.d, stats_date: st.stats.date,
+          is_random: st.cfg.rnd, interval_min: st.cfg.int, start_hour: st.cfg.s, end_hour: st.cfg.e,
+          updated_at: new Date().toISOString()
+        })
       });
-    } else if ('Notification' in window && Notification.permission === 'granted') {
-      const n = new Notification('Проверка фокуса', { body: text });
-      n.onclick = function() { window.focus(); showScreen('checkin'); n.close(); };
-    } else {
-      showScreen('checkin');
-    }
+      el.innerText = res.ok ? 'Облако синхронизировано' : 'Ошибка записи';
+    } catch (e) { el.innerText = 'Офлайн'; }
   }
 
-  async function startScheduler() {
-    if (timerId) clearTimeout(timerId);
-    if (!state.goal) return;
+  async function sync(key) {
+    if (SB_KEY.length < 15) return false;
+    try {
+      const res = await fetch(SB_URL + '/rest/v1/focus_users?user_key=eq.' + encodeURIComponent(key), { headers: { 'apikey': SB_KEY.trim() } });
+      if (!res.ok) return false;
+      const rows = await res.json();
+      const d = rows.at(0);
+      if (!d) return false;
+      const today = new Date().toDateString();
+      st.user = { key: d.user_key, name: d.name, email: d.email, loc: false };
+      st.goal = d.goal || '';
+      st.stats = { f: d.stats_date === today ? (d.focused || 0) : 0, d: d.stats_date === today ? (d.distracted || 0) : 0, date: today };
+      st.cfg = { rnd: Boolean(d.is_random), int: d.interval_min || 60, s: d.start_hour || 9, e: d.end_hour || 21 };
+      localStorage.setItem('focus_mob', JSON.stringify(st));
+      return true;
+    } catch (e) { return false; }
+  }
 
-    const cap = window.Capacitor;
-    if (cap && cap.Plugins && cap.Plugins.LocalNotifications) {
-      const LN = cap.Plugins.LocalNotifications;
-      await LN.requestPermissions();
-      const pending = await LN.getPending();
-      if (pending.notifications.length > 0) await LN.cancel(pending);
-
-      if (!state.settings.isRandom) {
-        await LN.schedule({
-          notifications: [{
-            title: 'Проверка фокуса',
-            body: getRandomQuestion(),
-            id: 1,
-            schedule: { every: 'minute', count: Math.max(1, state.settings.interval) }
-          }]
-        });
-      } else {
-        const list = [];
-        for (let i = 1; i <= 6; i++) {
-          const h = Math.floor(Math.random() * (state.settings.endHour - state.settings.startHour)) + state.settings.startHour;
-          const m = Math.floor(Math.random() * 60);
-          const d = new Date();
-          d.setHours(h, m, 0, 0);
-          if (d <= new Date()) d.setDate(d.getDate() + 1);
-          list.push({ title: 'Проверка фокуса', body: getRandomQuestion(), id: i + 10, schedule: { at: d } });
-        }
-        await LN.schedule({ notifications: list });
+  async function pushNow(delaySec) {
+    try {
+      const LN = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications;
+      if (LN) {
+        await LN.requestPermissions();
+        await LN.schedule({ notifications: [{ title: 'Проверка фокуса', body: getQ(), id: Math.floor(Math.random() * 90000) + 1, schedule: { at: new Date(Date.now() + (delaySec || 1) * 1000) } }] });
+        return;
       }
-      return;
-    }
+    } catch (e) {}
+    setTimeout(() => show('chk'), (delaySec || 0) * 1000);
+  }
 
-    if (!state.settings.isRandom) {
-      timerId = setTimeout(function() { sendPush(); startScheduler(); }, state.settings.interval * 60000);
+  async function sched() {
+    if (tId) clearTimeout(tId);
+    if (!st.goal) return;
+    try {
+      const LN = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications;
+      if (LN) {
+        await LN.requestPermissions();
+        const p = await LN.getPending();
+        if (p.notifications.length) await LN.cancel(p);
+        if (!st.cfg.rnd) {
+          await LN.schedule({ notifications: [{ title: 'Проверка фокуса', body: getQ(), id: 1, schedule: { every: 'minute', count: Math.max(1, st.cfg.int) } }] });
+        } else {
+          const list = [];
+          for (let i = 1; i <= 6; i++) {
+            const d = new Date();
+            d.setHours(Math.floor(Math.random() * (st.cfg.e - st.cfg.s)) + st.cfg.s, Math.floor(Math.random() * 60), 0, 0);
+            if (d <= new Date()) d.setDate(d.getDate() + 1);
+            list.push({ title: 'Проверка фокуса', body: getQ(), id: i + 10, schedule: { at: d } });
+          }
+          await LN.schedule({ notifications: list });
+        }
+        return;
+      }
+    } catch (e) {}
+    tId = setTimeout(() => { pushNow(0); sched(); }, (st.cfg.rnd ? (Math.floor(Math.random() * 76) + 15) : st.cfg.int) * 60000);
+  }
+
+  async function doLogin(loc) {
+    const msg = document.getElementById('login-msg');
+    msg.innerText = '';
+    const name = document.getElementById('in-name').value.trim();
+    const email = document.getElementById('in-email').value.trim().toLowerCase();
+    if (!loc && !email) { msg.innerText = 'Введите Email или нажмите «Войти локально»'; return; }
+    const btn = document.getElementById('b-login');
+    btn.innerText = 'Загрузка...'; btn.disabled = true;
+    if (loc) {
+      st.user = { key: 'loc_' + Date.now(), name: name || 'Гость', email: '', loc: true };
+      await save();
     } else {
-      const mins = Math.floor(Math.random() * 76) + 15;
-      timerId = setTimeout(function() {
-        const h = new Date().getHours();
+      const ok = await sync(email);
+      if (!ok) { st.user = { key: email, name: name || email.split('@').at(0), email: email, loc: false }; await save(); }
+    }
+    btn.innerText = 'Продолжить'; btn.disabled = false;
+    show('main'); sched();
+  }
+
+  document.getElementById('b-login').onclick = () => doLogin(false);
+  document.getElementById('b-local').onclick = () => doLogin(true);
+  document.getElementById('b-set').onclick = () => show('set');
+  document.getElementById('b-cls').onclick = () => show('main');
+  document.getElementById('b-edit').onclick = () => { document.getElementById('g-view').style.display = 'none'; document.getElementById('g-edit').style.display = 'block'; document.getElementById('in-goal').value = st.goal; };
+  document.getElementById('b-save-g').onclick = async () => { const v = document.getElementById('in-goal').value.trim(); if (v) { st.goal = v; show('main'); sched(); await save(); } };
+  document.getElementById('b-chk').onclick = () => show('chk');
+  document.getElementById('b-out').onclick = () => { localStorage.removeItem('focus_mob'); st.user = null; show('login'); };
+  document.getElementById('tg-rnd').onchange = updMode;
+  document.getElementById('b-save-s').onclick = async () => { st.cfg = { rnd: document.getElementById('tg-rnd').checked, int: Math.max(1, parseInt(document.getElementById('in-int').value) || 60), s: parseInt(document.getElementById('in-s').value) || 9, e: parseInt(document.getElementById('in-e').value) || 21 }; show('main'); sched(); await save(); };
+  document.getElementById('b-test').onclick = () => pushNow(3);
+  document.getElementById('b-yes').onclick = async () => { st.stats.f++; show('main'); await save(); };
+  document.getElementById('b-no').onclick = async () => { st.stats.d++; show('main'); await save(); };
+
+  (async function init() {
+    try {
+      const LN = window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.LocalNotifications;
+      if (LN) LN.addListener('localNotificationActionPerformed', () => show('chk'));
+    } catch (e) {}
+    const s = localStorage.getItem('focus_mob');
+    if (s) st = Object.assign({}, st, JSON.parse(s));
+    if (st.user && !st.user.loc) await sync(st.user.key);
+    if (st.user) { show('main'); sched(); }
+  })();
+</script>
+</body>
+</html>
